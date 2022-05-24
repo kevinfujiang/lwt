@@ -15,15 +15,27 @@ services:
     ports:
       - "8010:80"
     restart: unless-stopped
+    links:
+      - db
+    networks:
+      - mynet
   db:
     container_name: lwt_db
     environment:
-        MYSQL_ALLOW_EMPTY_PASSWORD: "no"
         MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-    hostname: ${DB_HOSTNAME}
+        MYSQL_DATABASE: ${DB_DATABASE}
+        TIME_ZONE: Asia/Shanghai
     image: mariadb:10.7
     restart: unless-stopped
+    hostname: lwt_db
     volumes:
         - lwt_db_data:/var/lib/mysql
+    ports:
+        - "3306:3306"
+    networks:
+        - mynet
 volumes:
   lwt_db_data:
+networks:
+  mynet:
+    driver: bridge
